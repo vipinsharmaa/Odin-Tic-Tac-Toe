@@ -1,4 +1,3 @@
-// Gameboard
 function Gameboard() {
     const rows = 3;
     const columns = 3;
@@ -31,7 +30,6 @@ function Gameboard() {
     return { getBoard, markCell, resetBoard };
 }
 
-// Single cell
 function Cell() {
     let value = 0;
 
@@ -62,6 +60,7 @@ function GameController(playerName = "Player", computerName = "Computer") {
     ];
 
     let activePlayer = players[0]; // Player goes first
+    let gameOver = false; // Track game state
 
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -70,13 +69,17 @@ function GameController(playerName = "Player", computerName = "Computer") {
     const getActivePlayer = () => activePlayer;
 
     const playRound = (row, column) => {
+        if (gameOver) return false; // Prevent playing if the game is over
+
         if (board.markCell(row, column, getActivePlayer().mark)) {
             if (checkWin()) {
                 alert(`${getActivePlayer().name} wins!`); // Notify the winner
+                gameOver = true;
                 return true; // Game Over
             }
             if (checkDraw()) {
                 alert("It's a draw!"); 
+                gameOver = true;
                 return true; 
             }
             switchPlayerTurn();
@@ -85,10 +88,12 @@ function GameController(playerName = "Player", computerName = "Computer") {
                 computerMove(); 
                 if (checkWin()) {
                     alert(`${getActivePlayer().name} wins!`); 
+                    gameOver = true;
                     return true; 
                 }
                 if (checkDraw()) {
                     alert("It's a draw!"); 
+                    gameOver = true;
                     return true; 
                 }
                 switchPlayerTurn(); 
@@ -145,13 +150,15 @@ function GameController(playerName = "Player", computerName = "Computer") {
     const resetGame = () => {
         board.resetBoard();
         activePlayer = players[0]; // Reset to player turn
+        gameOver = false; // Allow the game to be played again
     };
 
     return {
         getBoard: board.getBoard,
         playRound,
         getActivePlayer,
-        resetGame 
+        resetGame,
+        isGameOver: () => gameOver // Return the game over status
     };
 }
 
@@ -184,12 +191,12 @@ function DisplayController() {
         const selectedRow = e.target.dataset.row;
 
         if (selectedColumn === undefined || selectedRow === undefined) return; // Guard clause
+        if (game.isGameOver()) return; // Prevent any actions if the game is over
 
         const gameOver = game.playRound(parseInt(selectedRow), parseInt(selectedColumn)); // Pass both row and column
         updateScreen();
         if (gameOver) {
-            // Optionally, you can reset or disable further moves here
-            alert("Game Over!"); 
+            alert("Game Over! Click reset to play again."); 
         }
     }
 
