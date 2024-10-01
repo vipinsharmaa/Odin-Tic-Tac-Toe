@@ -19,15 +19,7 @@ function Gameboard() {
         return true; // Cell successfully marked
     };
 
-    const resetBoard = () => {
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-                board[i][j].addMark(0); // Reset all cells
-            }
-        }
-    };
-
-    return { getBoard, markCell, resetBoard };
+    return { getBoard, markCell };
 }
 
 // Single cell
@@ -74,20 +66,12 @@ function GameController(playerName = "Player", computerName = "Computer") {
                 alert(`${getActivePlayer().name} wins!`); // Notify the winner
                 return true; // Game Over
             }
-            if (checkDraw()) {
-                alert("It's a draw!"); // Notify draw
-                return true; // Game Over
-            }
             switchPlayerTurn();
             if (activePlayer === players[1]) {
                 // Computer's turn
                 computerMove(); // Make the computer move
                 if (checkWin()) {
                     alert(`${getActivePlayer().name} wins!`); // Notify the winner
-                    return true; // Game Over
-                }
-                if (checkDraw()) {
-                    alert("It's a draw!"); // Notify draw
                     return true; // Game Over
                 }
                 switchPlayerTurn(); // Switch back to player
@@ -136,21 +120,10 @@ function GameController(playerName = "Player", computerName = "Computer") {
         return false; // No win
     };
 
-    const checkDraw = () => {
-        const b = board.getBoard();
-        return b.flat().every(cell => cell.getValue() !== 0); // Check if all cells are marked
-    };
-
-    const resetGame = () => {
-        board.resetBoard();
-        activePlayer = players[0]; // Reset to player turn
-    };
-
     return {
         getBoard: board.getBoard,
         playRound,
-        getActivePlayer,
-        resetGame // Expose resetGame function
+        getActivePlayer
     };
 }
 
@@ -158,7 +131,6 @@ function DisplayController() {
     const game = GameController(); // Create a new GameController instance
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
-    const resetButton = document.querySelector('.reset'); // Select reset button
 
     const updateScreen = () => {
         boardDiv.innerHTML = ""; // Clear the board before updating
@@ -188,17 +160,11 @@ function DisplayController() {
         updateScreen();
         if (gameOver) {
             // Optionally, you can reset or disable further moves here
-            alert("Game Over!"); // Notify the winner or draw
+            alert(`${game.getActivePlayer().name} wins!`); // Notify the winner
         }
     }
 
-    function resetGame() {
-        game.resetGame(); // Reset the game state
-        updateScreen(); // Update the UI
-    }
-
     boardDiv.addEventListener("click", clickHandlerBoard);
-    resetButton.addEventListener("click", resetGame); // Add reset button event listener
 
     // Initial render
     updateScreen();
