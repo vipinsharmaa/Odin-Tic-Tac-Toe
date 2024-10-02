@@ -5,8 +5,8 @@
 
 ### Solution Links
 
-- Live Site URL: [https://vipinsharmaa.github.io/Odin-Tic-Tac-Toe/](Play Tic-Tac-Toe)
-- Solution URL: [https://github.com/vipinsharmaa/Odin-Tic-Tac-Toe](Repository)
+- Live Site URL: [https://vipinsharmaa.github.io/Odin-Tic-Tac-Toe]
+- Solution URL: [https://github.com/vipinsharmaa/Odin-Tic-Tac-Toe]
 
 
 ### Screenshot
